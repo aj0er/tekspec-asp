@@ -1,0 +1,13 @@
+﻿@model ExampleForum.Models.Post;
+
+<div class="postInfo" data-id="@Model.Id">
+    <div class="flex">
+        <h5 class="flex-1">@Model.Author.Email</h5>
+        <div class="postActions">
+            <a data-type="edit" data-id="@Model.Id">✎</a>
+            <a data-type="delete" data-id="@Model.Id">X</a>
+        </div>
+    </div>
+
+    <p>@Model.Content</p>
+</div>

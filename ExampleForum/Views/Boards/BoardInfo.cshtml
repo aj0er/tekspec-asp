@@ -1,0 +1,10 @@
+﻿@model ExampleForum.Models.View.BoardThreadViewModel;
+
+<h1>@Html.DisplayFor(_ => Model.Board.Name)</h1>
+@foreach (var item in Model.Threads)
+{
+    <div style="background-color: dodgerblue; color: white; border-radius: 15px; padding: 20px; ">
+        <h3>@Html.DisplayFor(_ => item.Name)</h3>
+        <a asp-controller="Threads" asp-route-id="@item.Id" style="color: white;">Visa</a>
+    </div>
+}

@@ -16,3 +16,41 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.post-area {
+    padding: 20px;
+    border-radius: 12px;
+}
+
+#post-edit {
+    background-color: darkcyan;
+    display: none;
+}
+
+#post-create {
+    background-color: pink;
+}
+
+.postActions a {
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
+}
+
+.postInfo {
+    background-color: lightcyan;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    border: 1px solid black;
+    padding: 20px;
+}

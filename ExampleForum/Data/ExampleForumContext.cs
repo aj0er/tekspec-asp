@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ExampleForum.Models;
+using Thread = ExampleForum.Models.Thread;
 
 namespace ExampleForum.Data
 {
@@ -15,5 +12,10 @@ namespace ExampleForum.Data
         }
 
         public DbSet<ExampleForum.Models.User> User { get; set; } = default!;
+        public DbSet<Board> Board { get; set; } = default!;
+        public DbSet<Post> Post { get; set; } = default!;
+        public DbSet<Thread> Thread { get; set; } = default!;
+
+
     }
 }

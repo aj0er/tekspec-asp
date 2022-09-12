@@ -1,0 +1,28 @@
+﻿@model ExampleForum.Models.View.ThreadViewModel;
+
+<h1>@Model.Thread.Name</h1>
+<div id="posts">
+    @foreach (var post in Model.Posts){
+        @await Html.PartialAsync("Post", post);
+    }
+</div>
+
+<div class="post-area" id="post-create">
+    <h3>Skapa nytt inlägg</h3>
+    <form method="post" action="/posts">
+        <input type="hidden" name="threadId" value="@Model.Thread.Id" />
+        <textarea name="content" cols="60" rows="8" autocomplete="off"></textarea><br />
+        <input type="submit" value="Skapa" />
+    </form>
+</div>
+
+<div class="post-area" id="post-edit">
+    <h3>Ändra inlägg</h3>
+    <form id="editForm" method="post">
+        <textarea id="editContentArea" name="content" cols="60" rows="8" autocomplete="off"></textarea><br />
+        <button type="button" id="submitEditBtn">Ändra</button>
+        <button type="button" id="cancelEditBtn">Avbryt</button>
+    </form>
+</div>
+
+<script defer src="~/js/posts.js" asp-append-version="true" />
