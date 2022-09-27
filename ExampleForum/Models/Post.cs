@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ExampleForum.Areas.Identity.Data;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace ExampleForum.Models
@@ -15,8 +16,8 @@ namespace ExampleForum.Models
         public Thread Thread { get; set; }
 
         [JsonIgnore]
-        public Guid AuthorId { get; set; }
-        public User Author { get; set; }
+        public string AuthorId { get; set; }
+        public ExampleForumUser Author { get; set; }
 
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }

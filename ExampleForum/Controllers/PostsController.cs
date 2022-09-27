@@ -3,6 +3,8 @@ using ExampleForum.Models.Requests;
 using ExampleForum.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using ExampleForum.Areas.Identity.Data;
 
 namespace ExampleForum.Controllers
 {
@@ -11,20 +13,23 @@ namespace ExampleForum.Controllers
 
         private ExampleForumContext _context;
         private ILogger<PostsController> _logger;
-        private readonly Guid _exampleId = Guid.Parse("8c348d2b-9321-41cf-aac7-ce8cd4176c9a");
+        private readonly UserManager<ExampleForumUser> _userManager;
 
-        public PostsController(ExampleForumContext context, ILogger<PostsController> logger)
+        public PostsController(ExampleForumContext context, ILogger<PostsController> logger, UserManager<ExampleForumUser> userManager)
         {
             _context = context;
             _logger = logger;
+            _userManager = userManager;
         }
 
         [HttpPost]
         public async Task<IActionResult> Index([Bind("ThreadId,Content")] CreatePostRequest request)
         {
-            var author = await _context.User.FindAsync(_exampleId);
+            var author = await _userManager.GetUserAsync(User);
             if (author == null)
+            {
                 return Unauthorized();
+            }
 
             var post = new Post
             {

@@ -3,7 +3,7 @@
 <h1>Tavlor</h1>
 @foreach (var item in Model) {
     <div style="background-color: green; color: white; border-radius: 15px; padding: 20px; ">
-        <h3>@Html.DisplayFor(_ => item.Name)</h3>
+        <h3>@item.Name</h3>
         <a asp-route-id="@item.Id" style="color: white;">Visa</a>
     </div>
 }

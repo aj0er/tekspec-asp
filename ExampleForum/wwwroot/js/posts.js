@@ -20,7 +20,7 @@ posts.addEventListener("click", async (e) => {
 
     switch (actionType) {
         case "delete": {
-            await fetch(`/posts/${postId}`, {
+            await fetch(`/Posts/${postId}`, {
                 method: "delete"
             });
 
@@ -52,7 +52,7 @@ submitEditBtn.addEventListener("click", async () => {
     let postId = editForm.dataset.postId;
 
     const formData = new FormData(editForm);
-    let res = await fetch(`/posts/${postId}`, {
+    let res = await fetch(`/Posts/${postId}`, {
         method: "put",
         body: formData
     });

@@ -1,0 +1,13 @@
+﻿@model ExampleForum.Models.View.BoardThreadViewModel;
+
+<h1>@Model.Board.Name</h1>
+<a href="/threads/create/@Model.Board.Id" class="btn btn-dark">Skapa nytt inlägg</a>
+<div style="margin-top: 30px">
+@foreach (var item in Model.Threads)
+{
+    <div style="background-color: dodgerblue; color: white; border-radius: 15px; padding: 20px; margin-top: 20px;">
+        <h3>@item.Name</h3>
+        <a asp-controller="Threads" asp-route-id="@item.Id" style="color: white;">Visa</a>
+    </div>
+}
+</div>

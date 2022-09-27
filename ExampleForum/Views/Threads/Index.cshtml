@@ -9,7 +9,7 @@
 
 <div class="post-area" id="post-create">
     <h3>Skapa nytt inlägg</h3>
-    <form method="post" action="/posts">
+    <form method="post" action="/Posts">
         <input type="hidden" name="threadId" value="@Model.Thread.Id" />
         <textarea name="content" cols="60" rows="8" autocomplete="off"></textarea><br />
         <input type="submit" value="Skapa" />
