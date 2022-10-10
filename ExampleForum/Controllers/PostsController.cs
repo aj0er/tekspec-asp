@@ -1,24 +1,21 @@
-﻿using ExampleForum.Data;
-using ExampleForum.Models.Requests;
+﻿using ExampleForum.Models.Requests;
 using ExampleForum.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using ExampleForum.Areas.Identity.Data;
+using ExampleForum.Services;
 
 namespace ExampleForum.Controllers
 {
     public class PostsController : Controller
     {
 
-        private ExampleForumContext _context;
-        private ILogger<PostsController> _logger;
         private readonly UserManager<ExampleForumUser> _userManager;
+        private readonly PostService _postService;
 
-        public PostsController(ExampleForumContext context, ILogger<PostsController> logger, UserManager<ExampleForumUser> userManager)
+        public PostsController(PostService postService, UserManager<ExampleForumUser> userManager)
         {
-            _context = context;
-            _logger = logger;
+            _postService = postService;
             _userManager = userManager;
         }
 
@@ -27,33 +24,28 @@ namespace ExampleForum.Controllers
         {
             var author = await _userManager.GetUserAsync(User);
             if (author == null)
-            {
                 return Unauthorized();
-            }
 
-            var post = new Post
+            if (await _postService.CreatePost(request, author))
             {
-                Id = Guid.NewGuid(),
-                Author = author,
-                Content = request.Content,
-                ThreadId = request.ThreadId,
-                Created = DateTime.Now,
-                Updated = DateTime.Now,
-            };
-
-            await _context.Post.AddAsync(post);
-            await _context.SaveChangesAsync();
-            return Redirect($"/Threads/{request.ThreadId}");
+                return Redirect($"/Threads/{request.ThreadId}");
+            } else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete]
         [Route("{controller}/{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var post = _context.Post.Single(e => e.Id == id);
-            _context.Post.Remove(post);
-            await _context.SaveChangesAsync();
-            return Ok();
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            return await _postService.DeletePost(id, user) 
+                ? Ok() 
+                : BadRequest();
         }
 
         [HttpPut]
@@ -64,21 +56,13 @@ namespace ExampleForum.Controllers
             if (id != post.Id)
                 return NotFound();
 
-            try
-            {
-                _context.Attach(post);
-                _context.Entry(post)
-                    .Property(x => x.Content)
-                    .IsModified = true;
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
 
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return BadRequest();
-            }
-
-            return Ok();
+            return await _postService.EditPost(post, user)
+                ? Ok() 
+                : BadRequest();
         }
 
     }

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ExampleForum.Data;
 using Microsoft.AspNetCore.Identity;
 using ExampleForum.Areas.Identity.Data;
+using ExampleForum.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ExampleForumContext>(options =>
@@ -37,12 +38,21 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
     options.LoginPath = "/Identity/Account/Login";
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.AccessDeniedPath = null;
     options.SlidingExpiration = true;
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        return Task.CompletedTask;
+    };
 });
 
-
+builder.Services.AddScoped<BoardService>();
+builder.Services.AddScoped<PostService>();
+builder.Services.AddScoped<ThreadService>();
 builder.Services.AddControllersWithViews();
+
 
 var app = builder.Build();
 app.Use(async (ctx, next) => // 404 handler

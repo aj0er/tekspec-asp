@@ -3,7 +3,7 @@
 <h1>@Model.Thread.Name</h1>
 <div id="posts">
     @foreach (var post in Model.Posts){
-        @await Html.PartialAsync("Post", post);
+        <partial name="Post" model="post" />
     }
 </div>
 
