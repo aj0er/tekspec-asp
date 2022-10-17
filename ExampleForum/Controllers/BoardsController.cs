@@ -1,4 +1,4 @@
-﻿using ExampleForum.Models.View;
+﻿using ExampleForum.Models.Views;
 using ExampleForum.Services;
 using Microsoft.AspNetCore.Mvc;
 

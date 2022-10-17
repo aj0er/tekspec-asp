@@ -3,6 +3,7 @@ using ExampleForum.Data;
 using ExampleForum.Models;
 using ExampleForum.Models.Requests;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 using Thread = ExampleForum.Models.Thread;
 
 namespace ExampleForum.Services
@@ -38,6 +39,17 @@ namespace ExampleForum.Services
                 .ToListAsync();
 
             return (thread, posts);
+        }
+
+        public async Task<List<Post>> FetchPostsByThread(Guid threadId)
+        {
+            var posts = await _db.Post
+                            .Where(b => b.ThreadId == threadId)
+                            .Include(p => p.Author)
+                            .OrderBy(p => p.Created)
+                            .ToListAsync();
+
+            return posts;
         }
 
         /// <summary>

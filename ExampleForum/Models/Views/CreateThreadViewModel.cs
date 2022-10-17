@@ -1,4 +1,4 @@
-﻿namespace ExampleForum.Models.View
+﻿namespace ExampleForum.Models.Views
 {
     public class CreateThreadViewModel
     {

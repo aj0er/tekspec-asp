@@ -1,6 +1,6 @@
 ﻿using ExampleForum.Areas.Identity.Data;
 using ExampleForum.Models.Requests;
-using ExampleForum.Models.View;
+using ExampleForum.Models.Views;
 using ExampleForum.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +21,7 @@ namespace ExampleForum.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return Content("yes");
         }
 
         [Route("/{controller}/{id}")]

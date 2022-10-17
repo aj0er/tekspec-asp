@@ -1,4 +1,4 @@
-﻿@model ExampleForum.Models.View.ThreadViewModel;
+﻿@model ExampleForum.Models.Views.ThreadViewModel;
 
 <h1>@Model.Thread.Name</h1>
 <div id="posts">
@@ -6,6 +6,8 @@
         <partial name="Post" model="post" />
     }
 </div>
+
+<div id="posts-react"></div>
 
 <div class="post-area" id="post-create">
     <h3>Skapa nytt inlägg</h3>

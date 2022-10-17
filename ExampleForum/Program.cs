@@ -3,6 +3,8 @@ using ExampleForum.Data;
 using Microsoft.AspNetCore.Identity;
 using ExampleForum.Areas.Identity.Data;
 using ExampleForum.Services;
+using Microsoft.Extensions.Options;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ExampleForumContext>(options =>
@@ -12,6 +14,16 @@ builder.Services.AddDefaultIdentity<ExampleForumUser>(options => options.SignIn.
     .AddEntityFrameworkStores<ExampleForumContext>();
 
 builder.Services.AddRazorPages();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "CORS",
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:4200");
+                      });
+});
+
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -51,10 +63,14 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddScoped<BoardService>();
 builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<ThreadService>();
-builder.Services.AddControllersWithViews();
-
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.DefaultIgnoreCondition
+                      = JsonIgnoreCondition.WhenWritingNull;
+});
 
 var app = builder.Build();
+app.UseCors("CORS");
 app.Use(async (ctx, next) => // 404 handler
 {
     await next();
