@@ -1,0 +1,32 @@
+<div class="postInfo">
+    <h2 class="flex-1">{{ post.user.displayName }}</h2>
+
+    <ng-template [ngIf]="edit != null" [ngIfElse]="noEdit">
+        <textarea [(ngModel)]="edit.content"></textarea>
+    </ng-template>
+
+    <ng-template #noEdit>
+        <p>{{ post.content }}</p>
+    </ng-template>
+
+    <div class="postActions">
+        <ng-template [ngIf]="edit == null" [ngIfElse]="editActions">
+            <a (click)="startEdit()">
+                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="edit"></mat-icon>
+            </a>
+            <a (click)="deletePost()">
+                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="delete"></mat-icon>
+            </a>
+        </ng-template>
+
+        <ng-template #editActions>
+            <a (click)="save()">
+                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="save"></mat-icon>
+            </a>
+
+            <a (click)="cancel()">
+                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="cancel"></mat-icon>
+            </a>
+        </ng-template>
+    </div>
+</div>

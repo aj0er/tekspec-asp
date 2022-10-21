@@ -25,14 +25,14 @@ namespace ExampleForum.Services
         /// <param name="request">Förfrågan mappad från controller som innehåller nödvändiga data.</param>
         /// <param name="author">Användaren som försöker skapa ett inlägg.</param>
         /// <returns></returns>
-        public async Task<bool> CreatePost(CreatePostRequest request, ExampleForumUser author)
+        public async Task<bool> CreatePost(Guid threadId, CreatePostRequest request, ExampleForumUser author)
         {
             var post = new Post
             {
                 Id = Guid.NewGuid(),
                 Author = author,
                 Content = request.Content,
-                ThreadId = request.ThreadId,
+                ThreadId = threadId,
                 Created = DateTime.Now,
                 Updated = DateTime.Now,
             };
@@ -65,17 +65,18 @@ namespace ExampleForum.Services
         /// <param name="post">Ändrade data mappad från controllern.</param>
         /// <param name="user">Användaren som försöker ta bort inlägget.</param>
         /// <returns></returns>
-        public async Task<bool> EditPost(Post post, ExampleForumUser user)
+        public async Task<bool> EditPost(Guid id, EditPostRequest request, ExampleForumUser user)
         {
+
             // Det verkar inte gå att uppdatera ett inlägg med en WHERE-sats, därför måste inlägget hämtas först för att kunna verifiera ägaren.
-            var previous = _db.Post.FirstOrDefault(e => e.Id == post.Id);
+            var previous = _db.Post.FirstOrDefault(e => e.Id == id);
             if (previous == null)
                 return false;
 
             if (previous.AuthorId != user.Id) // Användaren ska inte kunna ändra andras inlägg
                 return false;
 
-            previous.Content = post.Content;
+            previous.Content = request.Content;
 
             try
             {

@@ -20,19 +20,22 @@ namespace ExampleForum.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index([Bind("ThreadId,Content")] CreatePostRequest request)
+        public async Task<IActionResult> Index([Bind("Content")] CreatePostRequest request)
         {
             var author = await _userManager.GetUserAsync(User);
             if (author == null)
                 return Unauthorized();
 
+            /*
             if (await _postService.CreatePost(request, author))
             {
                 return Redirect($"/Threads/{request.ThreadId}");
             } else
             {
                 return BadRequest();
-            }
+            }*/
+
+            return NotFound();
         }
 
         [HttpDelete]
@@ -49,18 +52,18 @@ namespace ExampleForum.Controllers
         }
 
         [HttpPut]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         [Route("{controller}/{id}")]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Content")] Post post)
+        public async Task<IActionResult> Edit(Guid id, [FromBody] EditPostRequest request)
         {
-            if (id != post.Id)
-                return NotFound();
+            if (request == null)
+                return BadRequest();
 
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return Unauthorized();
 
-            return await _postService.EditPost(post, user)
+            return await _postService.EditPost(id, request, user)
                 ? Ok() 
                 : BadRequest();
         }

@@ -1,0 +1,24 @@
+<ng-template [ngIf]="threadContext != null" [ngIfElse]="loading">
+    <h1>{{ threadContext.thread.name }}</h1>
+
+    <div *ngFor="let post of threadContext.posts">
+        <app-post-item [post]="post" (saved)="onPostSaved($event)" (deleted)="onPostDeleted($event)"></app-post-item>
+    </div>
+
+    <ng-template #creatingPostTemp>
+      <mat-card>
+        <textarea matInput [(ngModel)]="createPostContent"></textarea>
+
+        <button style="margin-top: 20px;" mat-raised-button color="primary" (click)="createPost()">Spara</button>
+        <button style="margin-left: 10px;" mat-raised-button color="warn" (click)="cancelCreate()">Avbryt</button>
+      </mat-card>
+    </ng-template>
+
+    <button style="margin-top: 20px;" mat-raised-button color="primary" (click)="createPost()" *ngIf="creatingPost == false;else creatingPostTemp">Skapa nytt inlägg</button>
+</ng-template>
+
+<ng-template #loading>
+  <div>
+      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+</ng-template>

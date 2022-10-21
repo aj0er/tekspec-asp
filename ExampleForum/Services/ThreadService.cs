@@ -85,5 +85,9 @@ namespace ExampleForum.Services
             return threadId;
         }
 
+        public async Task<Thread?> FetchThreadById(Guid threadId)
+        {
+            return await _db.Thread.FindAsync(threadId);
+        }
     }
 }

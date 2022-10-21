@@ -22,7 +22,7 @@ namespace ExampleForum.Services
         /// Hämtar alla tavlor från databasen.
         /// </summary>
         /// <returns>En lista med tavlor.</returns>
-        public async Task<List<Board>> FetchBoards()
+        public async Task<IEnumerable<Board>> FetchBoards()
         {
             return await _db.Board.ToListAsync();
         }
@@ -32,7 +32,7 @@ namespace ExampleForum.Services
         /// </summary>
         /// <param name="boardId">Tavlans id.</param>
         /// <returns>En tuple med (tavla, trådar) eller null om ingen tavla med det id:t hittades.</returns>
-        public async Task<(Board, List<Thread>)?> FetchBoardAndThreads(Guid boardId)
+        public async Task<(Board, IEnumerable<Thread>)?> FetchBoardAndThreads(Guid boardId)
         {
             var board = await _db.Board.FirstAsync(b => b.Id == boardId);
             if (board == null)

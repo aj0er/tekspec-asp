@@ -5,6 +5,8 @@ using ExampleForum.Areas.Identity.Data;
 using ExampleForum.Services;
 using Microsoft.Extensions.Options;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ExampleForumContext>(options =>
@@ -13,7 +15,10 @@ builder.Services.AddDbContext<ExampleForumContext>(options =>
 builder.Services.AddDefaultIdentity<ExampleForumUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ExampleForumContext>();
 
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().AddRazorPagesOptions(o =>
+{
+    o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+});
 
 builder.Services.AddCors(options =>
 {
@@ -21,6 +26,9 @@ builder.Services.AddCors(options =>
                       policy =>
                       {
                           policy.WithOrigins("http://localhost:4200");
+                          policy.AllowAnyHeader();
+                          policy.AllowAnyMethod();
+                          policy.AllowCredentials();
                       });
 });
 
@@ -46,6 +54,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
+    options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.HttpOnly = true;
     options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 

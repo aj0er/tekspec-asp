@@ -50,11 +50,14 @@ submitEditBtn.addEventListener("click", async () => {
     setEditing(false);
 
     let postId = editForm.dataset.postId;
-
-    const formData = new FormData(editForm);
     let res = await fetch(`/Posts/${postId}`, {
         method: "put",
-        body: formData
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            content: editForm.content.value
+        })
     });
 
     if (res.ok) {

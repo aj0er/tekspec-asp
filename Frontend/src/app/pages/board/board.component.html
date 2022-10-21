@@ -1,0 +1,11 @@
+<ng-template [ngIf]="boardContext != null" [ngIfElse]="loggedOut">
+    <div *ngFor="let thread of boardContext.threads">
+        <app-thread-item [thread]="thread"></app-thread-item>
+    </div>
+  </ng-template>
+  
+  <ng-template #loggedOut>
+    <div>
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    </div>
+  </ng-template>

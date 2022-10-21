@@ -1,0 +1,11 @@
+<ng-template [ngIf]="boards != null" [ngIfElse]="loggedOut">
+  <div *ngFor="let board of boards">
+    <app-board-item [board]="board"></app-board-item>
+  </div>
+</ng-template>
+
+<ng-template #loggedOut>
+  <div>
+    Laddar tavlor...
+  </div>
+</ng-template>
