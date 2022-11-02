@@ -6,13 +6,7 @@ namespace ExampleForum.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private const string SpaRoot = @"../Frontend/dist/frontend/spa";
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+        private const string SpaRoot = @"frontend-dist/spa";
 
         public IActionResult Index()
         {
@@ -22,7 +16,7 @@ namespace ExampleForum.Controllers
         [HttpGet("/spa")]
         public IActionResult Spa()
         {
-            var stream = System.IO.File.OpenRead(@"frontend-dist/spa/index.html");
+            var stream = System.IO.File.OpenRead(Path.Combine(SpaRoot, "index.html"));
             return new FileStreamResult(stream, "text/html");
         }
 

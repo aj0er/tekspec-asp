@@ -19,17 +19,20 @@ builder.Services.AddRazorPages().AddRazorPagesOptions(o =>
     o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
 });
 
-builder.Services.AddCors(options =>
+if (builder.Environment.IsDevelopment()) // Endast dev kräver CORS.
 {
-    options.AddPolicy(name: "CORS",
-                      policy =>
-                      {
-                          policy.WithOrigins("http://localhost:4200");
-                          policy.AllowAnyHeader();
-                          policy.AllowAnyMethod();
-                          policy.AllowCredentials();
-                      });
-});
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(name: "CORS",
+                          policy =>
+                          {
+                              policy.WithOrigins("http://localhost:4200");
+                              policy.AllowAnyHeader();
+                              policy.AllowAnyMethod();
+                              policy.AllowCredentials();
+                          });
+    });
+}
 
 builder.Services.AddSpaStaticFiles(config =>
 {
@@ -57,7 +60,11 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.Cookie.SameSite = SameSiteMode.None;
+    if (builder.Environment.IsDevelopment()) // Tillåt frontend att skicka denna session cookie från annan origin
+    {
+        options.Cookie.SameSite = SameSiteMode.None;
+    }
+
     options.Cookie.HttpOnly = true;
     options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
