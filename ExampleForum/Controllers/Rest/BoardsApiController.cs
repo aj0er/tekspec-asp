@@ -1,19 +1,26 @@
-﻿using ExampleForum.Models;
+﻿using ExampleForum.Areas.Identity.Data;
+using ExampleForum.Models;
+using ExampleForum.Models.Requests;
 using ExampleForum.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExampleForum.Controllers.Rest
 {
     [Route("/api/boards")]
     [ApiController]
-    public class BoardsApiController : ControllerBase
+    public class BoardsApiController : Controller
     {
 
         private BoardService _boardService;
+        private ThreadService _threadService;
+        private readonly UserManager<ExampleForumUser> _userManager;
 
-        public BoardsApiController(BoardService boardService)
+        public BoardsApiController(BoardService boardService, ThreadService threadService, UserManager<ExampleForumUser> userManager)
         {
             _boardService = boardService;
+            _threadService = threadService;
+            _userManager = userManager;
         }
 
         [HttpGet("")]
@@ -36,5 +43,23 @@ namespace ExampleForum.Controllers.Rest
             });
         }
 
+        [HttpPost("{id}/threads")]
+        public async Task<IActionResult> CreateThread(Guid id, [FromBody] CreateThreadRequest request)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            var threadId = await _threadService.CreateThread(id, request, user);
+            if(threadId != null)
+            {
+                return Json(threadId.ToString());
+            } else
+            {
+                return BadRequest();
+            }
+        }
+
+        
     }
 }

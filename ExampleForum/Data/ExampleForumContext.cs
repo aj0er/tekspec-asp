@@ -3,7 +3,6 @@ using ExampleForum.Models;
 using Thread = ExampleForum.Models.Thread;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ExampleForum.Areas.Identity.Data;
-using Microsoft.AspNetCore.Identity;
 
 namespace ExampleForum.Data
 {

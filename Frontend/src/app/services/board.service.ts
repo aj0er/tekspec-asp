@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Board } from '../models/board.model';
 import { Thread } from '../models/thread.model';
+import { getHttpBaseUrl } from '../util';
 
 @Injectable({
   providedIn: 'root'
@@ -15,24 +16,12 @@ export class BoardService {
     this.httpClient = httpClient;
   }
 
-  /*
-
-    getBoards()
-    getThreadsByBoard()
-    createThreadAndPost()
-    createPost()
-    deletePost()
-    editPost()
-    getPostsByThread()
-
-  */
-
   getBoards(): Observable<Board[]> {
-    return this.httpClient.get<Board[]>("https://localhost:7234/api/boards", {responseType: "json"});
+    return this.httpClient.get<Board[]>(`${getHttpBaseUrl()}/api/boards`, {responseType: "json"});
   }
 
   getBoardAndThreads(id: string): Observable<BoardContext> {
-    return this.httpClient.get<BoardContext>("https://localhost:7234/api/boards/" + id + "/threads", {responseType: "json"});
+    return this.httpClient.get<BoardContext>(`${getHttpBaseUrl()}/api/boards/${id}/threads`, {responseType: "json"});
   }
 
 }

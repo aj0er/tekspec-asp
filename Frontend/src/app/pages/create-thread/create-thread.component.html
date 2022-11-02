@@ -1,0 +1,7 @@
+<div id="createThread">
+    <h1>Skapa ny tråd</h1>
+    <input matInput placeholder="Trådens titel" [(ngModel)]="title">
+    <textarea matInput [(ngModel)]="content"></textarea>
+
+    <button style="margin-top: 20px;" mat-raised-button color="primary" (click)="createThread()">Skapa tråd</button>
+</div>

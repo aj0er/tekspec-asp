@@ -3,11 +3,39 @@ const contentArea = document.getElementById("editContentArea");
 
 const postCreateArea = document.getElementById("post-create");
 const postEditArea = document.getElementById("post-edit");
+const postCreateForm = document.getElementById("postCreateForm");
 
 const cancelEditBtn = document.getElementById("cancelEditBtn");
 const submitEditBtn = document.getElementById("submitEditBtn");
 
 const editForm = document.getElementById("editForm");
+
+const urlSearchParams = new URLSearchParams(window.location.search);
+
+postCreateForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const threadId = e.target.threadId.value;
+
+    const request = {
+        content: e.target.content.value
+    }
+
+    let res = await fetch(`/api/threads/${threadId}/posts`, {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(request)
+    });
+
+    if (!res.ok) {
+        alert("!");
+        return;
+    }
+
+    window.location.reload();
+});
 
 posts.addEventListener("click", async (e) => {
     const target = e.target;

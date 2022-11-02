@@ -5,6 +5,7 @@ using ExampleForum.Models.Response;
 using ExampleForum.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Thread = ExampleForum.Models.Thread;
 
 namespace ExampleForum.Controllers.Rest
 {
@@ -33,7 +34,7 @@ namespace ExampleForum.Controllers.Rest
 
             return Ok(new ThreadContext
             {
-                Thread = thread,
+                Thread = CreateThreadResponse(thread),
                 Posts = posts.Select(s => CreatePostResponse(s))
             });
         }
@@ -51,11 +52,22 @@ namespace ExampleForum.Controllers.Rest
 
             if(await _postService.CreatePost(thread.Id, request, user))
             {
-                return await _postService.GetPosts();
+                var posts = await _postService.FetchPostsByThread(thread.Id);
+                return Json(posts.Select(p => CreatePostResponse(p)));
             } else
             {
                 return BadRequest();
             }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteThread(Guid id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            return await _threadService.DeleteThread(id, user) ? Ok() : NotFound();
         }
 
         private PostResponse CreatePostResponse(Post post)
@@ -65,6 +77,17 @@ namespace ExampleForum.Controllers.Rest
                 Id = post.Id,
                 Content = post.Content,
                 User = CreateUserResponse(post.Author),
+            };
+        }
+
+        private ThreadResponse CreateThreadResponse(Thread thread)
+        {
+            return new ThreadResponse
+            {
+                Id = thread.Id,
+                Name = thread.Name,
+                Board = thread.BoardId,
+                Author = thread.AuthorId
             };
         }
 

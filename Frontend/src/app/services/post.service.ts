@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Post } from '../models/post.model';
+import { getHttpBaseUrl } from '../util';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class PostService {
   deletePost(id: string): Observable<boolean> {
     const result = new Subject<boolean>();
 
-    this.httpClient.delete("https://localhost:7234/Posts/" + id, {
+    this.httpClient.delete(`${getHttpBaseUrl()}/Posts/${id}`, {
       withCredentials: true,
     }).subscribe({
         error: (_) => {
@@ -36,7 +37,7 @@ export class PostService {
   saveEditedPost(postId: string, request: {content: string}): Observable<boolean> {
     const result = new Subject<boolean>();
 
-    this.httpClient.put("https://localhost:7234/Posts/" + postId, request, {
+    this.httpClient.put(`${getHttpBaseUrl()}/Posts/${postId}`, request, {
       withCredentials: true,
     }).subscribe({
         error: (_) => {

@@ -3,7 +3,6 @@ using ExampleForum.Data;
 using ExampleForum.Models;
 using ExampleForum.Models.Requests;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
 using Thread = ExampleForum.Models.Thread;
 
 namespace ExampleForum.Services
@@ -41,19 +40,30 @@ namespace ExampleForum.Services
             return (thread, posts);
         }
 
-        public async Task<List<Post>> FetchPostsByThread(Guid threadId)
+        /// <summary>
+        /// Försöker ta bort en tråd från databasen.
+        /// </summary>
+        /// <param name="threadId">Trådens ID.</param>
+        /// <param name="user">Användaren som försöker ta bort tråden.</param>
+        /// <returns></returns>
+        public async Task<bool> DeleteThread(Guid threadId, ExampleForumUser user)
         {
-            var posts = await _db.Post
-                            .Where(b => b.ThreadId == threadId)
-                            .Include(p => p.Author)
-                            .OrderBy(p => p.Created)
-                            .ToListAsync();
+            var thread = await _db.Thread
+                           .Where(b => 
+                                b.Id == threadId && 
+                                b.AuthorId == user.Id) // Användaren får bara ta bort sina egna inlägg.
+                           .FirstAsync();
 
-            return posts;
+            if (thread == null)
+                return false;
+
+            _db.Thread.Remove(thread);
+            await _db.SaveChangesAsync();
+            return true;
         }
 
         /// <summary>
-        /// Skapar en ny tråd i en tavla tillsammans med ett första inlägg.
+        /// Försöker skapa en ny tråd i en tavla tillsammans med ett första inlägg.
         /// </summary>
         /// <param name="boardId">ID för tavlan att skapa tråden inom.</param>
         /// <param name="request">Förfrågan med b.la. titel och den första inläggets innehåll.</param>
@@ -66,7 +76,8 @@ namespace ExampleForum.Services
             {
                 Id = threadId,
                 Name = request.Title,
-                BoardId = boardId
+                BoardId = boardId,
+                Author = user,
             };
 
             var post = new Post
@@ -85,9 +96,15 @@ namespace ExampleForum.Services
             return threadId;
         }
 
+        /// <summary>
+        /// Försöker hämta en tråd baserad på dess id.
+        /// </summary>
+        /// <param name="threadId">ID för tråden som ska ändras</param>
+        /// <returns>Tråden med det specificerade ID:t eller null om den inte fanns.</returns>
         public async Task<Thread?> FetchThreadById(Guid threadId)
         {
             return await _db.Thread.FindAsync(threadId);
         }
+
     }
 }

@@ -20,8 +20,18 @@ namespace ExampleForum.Services
         }
 
         /// <summary>
+        /// Hämtar en lista på alla inlägg från databasen.
+        /// </summary>
+        /// <returns>En lista med alla inlägg som finns.</returns>
+        public async Task<List<Post>> GetPosts()
+        {
+            return await _db.Post.ToListAsync();
+        }
+
+        /// <summary>
         /// Försöker skapa ett nytt inlägg i databasen.
         /// </summary>
+        /// <param name="threadId">ID för tråden som inlägget skapas i</param>
         /// <param name="request">Förfrågan mappad från controller som innehåller nödvändiga data.</param>
         /// <param name="author">Användaren som försöker skapa ett inlägg.</param>
         /// <returns></returns>
@@ -60,14 +70,30 @@ namespace ExampleForum.Services
         }
 
         /// <summary>
+        /// Hämtar alla inlägg som skapats i en viss tråd.
+        /// </summary>
+        /// <param name="threadId">ID för tråden som ska sökas i</param>
+        /// <returns>En lista med alla inlägg som skapades i den specificerade tråden</returns>
+        public async Task<List<Post>> FetchPostsByThread(Guid threadId)
+        {
+            var posts = await _db.Post
+                            .Where(b => b.ThreadId == threadId)
+                            .Include(p => p.Author)
+                            .OrderBy(p => p.Created)
+                            .ToListAsync();
+
+            return posts;
+        }
+
+        /// <summary>
         /// Försöker ändra ett inlägg i databasen.
         /// </summary>
-        /// <param name="post">Ändrade data mappad från controllern.</param>
+        /// <param name="id">ID för inlägget som ändras.</param>
+        /// <param name="request">Ändrade data mappad från controllern.</param>
         /// <param name="user">Användaren som försöker ta bort inlägget.</param>
         /// <returns></returns>
         public async Task<bool> EditPost(Guid id, EditPostRequest request, ExampleForumUser user)
         {
-
             // Det verkar inte gå att uppdatera ett inlägg med en WHERE-sats, därför måste inlägget hämtas först för att kunna verifiera ägaren.
             var previous = _db.Post.FirstOrDefault(e => e.Id == id);
             if (previous == null)

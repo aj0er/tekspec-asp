@@ -21,6 +21,7 @@ import { BoardComponent } from './pages/board/board.component';
 import { ThreadItemComponent } from './components/thread-item/thread-item.component';
 import { ThreadComponent } from './pages/thread/thread.component';
 import { PostItemComponent } from './components/post-item/post-item.component';
+import { CreateThreadComponent } from './pages/create-thread/create-thread.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { PostItemComponent } from './components/post-item/post-item.component';
     ThreadItemComponent,
     ThreadComponent,
     PostItemComponent,
+    CreateThreadComponent,
   ],
   imports: [
     BrowserModule, 

@@ -9,24 +9,28 @@
         <p>{{ post.content }}</p>
     </ng-template>
 
-    <div class="postActions">
-        <ng-template [ngIf]="edit == null" [ngIfElse]="editActions">
-            <a (click)="startEdit()">
-                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="edit"></mat-icon>
-            </a>
-            <a (click)="deletePost()">
-                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="delete"></mat-icon>
-            </a>
-        </ng-template>
+    <ng-container *ngIf="(authService.user | async) as user;">
+        <ng-container *ngIf="user.id == post.user.id">
+            <div class="postActions">
+                <ng-template [ngIf]="edit == null" [ngIfElse]="editActions">
+                    <a (click)="startEdit()">
+                        <mat-icon aria-hidden="false" fontIcon="edit"></mat-icon>
+                    </a>
+                    <a (click)="deletePost()">
+                        <mat-icon aria-hidden="false" fontIcon="delete"></mat-icon>
+                    </a>
+                </ng-template>
 
-        <ng-template #editActions>
-            <a (click)="save()">
-                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="save"></mat-icon>
-            </a>
+                <ng-template #editActions>
+                    <a (click)="save()">
+                        <mat-icon aria-hidden="false" fontIcon="save"></mat-icon>
+                    </a>
 
-            <a (click)="cancel()">
-                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="cancel"></mat-icon>
-            </a>
-        </ng-template>
-    </div>
+                    <a (click)="cancel()">
+                        <mat-icon aria-hidden="false" fontIcon="cancel"></mat-icon>
+                    </a>
+                </ng-template>
+            </div>
+        </ng-container>
+    </ng-container>
 </div>

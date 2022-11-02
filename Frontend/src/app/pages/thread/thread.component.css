@@ -4,3 +4,13 @@ textarea {
     width: 50%;
     height: 10rem;
 }
+
+#threadHeader {
+    display: flex; 
+    justify-content: space-between;
+    margin-bottom: 3rem;
+}
+
+#threadHeader h1 {
+    margin: 0;
+}

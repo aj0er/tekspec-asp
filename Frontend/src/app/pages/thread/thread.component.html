@@ -1,10 +1,17 @@
 <ng-template [ngIf]="threadContext != null" [ngIfElse]="loading">
+  <div id="threadHeader">
     <h1>{{ threadContext.thread.name }}</h1>
+    <ng-container *ngIf="(authService.user | async) as user;">
+      <button *ngIf="user.id == threadContext.thread.author" mat-raised-button color="warn" (click)="deleteThread()">Ta
+        bort tråd</button>
+    </ng-container>
+  </div>
 
-    <div *ngFor="let post of threadContext.posts">
-        <app-post-item [post]="post" (saved)="onPostSaved($event)" (deleted)="onPostDeleted($event)"></app-post-item>
-    </div>
+  <div *ngFor="let post of threadContext.posts">
+    <app-post-item [post]="post" (saved)="onPostSaved($event)" (deleted)="onPostDeleted($event)"></app-post-item>
+  </div>
 
+  <ng-container *ngIf="(authService.user | async) as user;">
     <ng-template #creatingPostTemp>
       <mat-card>
         <textarea matInput [(ngModel)]="createPostContent"></textarea>
@@ -14,11 +21,13 @@
       </mat-card>
     </ng-template>
 
-    <button style="margin-top: 20px;" mat-raised-button color="primary" (click)="createPost()" *ngIf="creatingPost == false;else creatingPostTemp">Skapa nytt inlägg</button>
+    <button style="margin-top: 20px;" mat-raised-button color="primary" (click)="createPost()"
+      *ngIf="creatingPost == false;else creatingPostTemp">Skapa nytt inlägg</button>
+  </ng-container>
 </ng-template>
 
 <ng-template #loading>
   <div>
-      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
   </div>
 </ng-template>

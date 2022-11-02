@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Post } from 'src/app/models/post.model';
+import { AuthService } from 'src/app/services/auth.service';
+import { ThreadService } from 'src/app/services/thread.service';
 
 @Component({
   selector: 'app-post-item',
@@ -14,6 +16,12 @@ export class PostItemComponent {
 
   @Output() deleted = new EventEmitter<{ id: string }>();
   @Output() saved = new EventEmitter<Post>();
+
+  authService: AuthService;
+
+  constructor(authService: AuthService){
+    this.authService = authService;
+  }
 
   startEdit(){
     if(this.edit == null && this.post != null){

@@ -1,11 +1,12 @@
-<ng-template [ngIf]="boards != null" [ngIfElse]="loggedOut">
+<h1>Tavlor</h1>
+<ng-template [ngIf]="boards != null" [ngIfElse]="loading">
   <div *ngFor="let board of boards">
     <app-board-item [board]="board"></app-board-item>
   </div>
 </ng-template>
 
-<ng-template #loggedOut>
+<ng-template #loading>
   <div>
-    Laddar tavlor...
+      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
   </div>
 </ng-template>

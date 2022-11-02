@@ -5,7 +5,7 @@ namespace ExampleForum.Models
     public class ThreadContext
     {
 
-        public Thread Thread { get;set; }
+        public ThreadResponse Thread { get;set; }
         public IEnumerable<PostResponse> Posts { get; set; }
 
     }

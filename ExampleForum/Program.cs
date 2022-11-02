@@ -3,10 +3,9 @@ using ExampleForum.Data;
 using Microsoft.AspNetCore.Identity;
 using ExampleForum.Areas.Identity.Data;
 using ExampleForum.Services;
-using Microsoft.Extensions.Options;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ExampleForumContext>(options =>
@@ -32,6 +31,10 @@ builder.Services.AddCors(options =>
                       });
 });
 
+builder.Services.AddSpaStaticFiles(config =>
+{
+    config.RootPath = "frontend";
+});
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -86,7 +89,7 @@ app.Use(async (ctx, next) => // 404 handler
 
     if (ctx.Response.StatusCode == 404 && !ctx.Response.HasStarted)
     {
-        string originalPath = ctx.Request.Path.Value;
+        string? originalPath = ctx.Request.Path.Value;
         ctx.Items["originalPath"] = originalPath;
         ctx.Request.Path = "/Errors/404";
         await next();
@@ -102,6 +105,20 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+var webRootProvider =
+  new PhysicalFileProvider(builder.Environment.WebRootPath);
+
+var spaPathProvider =
+  new PhysicalFileProvider(
+   Path.Combine(Environment.CurrentDirectory, @"frontend-dist/"));
+
+var compositeProvider =
+  new CompositeFileProvider(webRootProvider,
+                            spaPathProvider);
+
+app.Environment.WebRootFileProvider = compositeProvider;
+
 app.UseStaticFiles();
 app.UseRouting();
 

@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { Post } from 'src/app/models/post.model';
+import { AuthService } from 'src/app/services/auth.service';
 import { PostService } from 'src/app/services/post.service';
 import { ThreadContext, ThreadService } from 'src/app/services/thread.service';
 
@@ -16,15 +17,19 @@ export class ThreadComponent {
 
   private postService: PostService
   private threadService: ThreadService
+  authService: AuthService
+  private router: Router
 
   @Input()
   createPostContent: string = ""
 
   creatingPost: boolean = false  
 
-  constructor(route: ActivatedRoute, threadService: ThreadService, postService: PostService) {
+  constructor(route: ActivatedRoute, threadService: ThreadService, postService: PostService, router: Router, authService: AuthService) {
     this.postService = postService;
     this.threadService = threadService;
+    this.router = router;
+    this.authService = authService;
 
     const id = route.snapshot.paramMap.get('id');
     if(id == null)
@@ -35,11 +40,26 @@ export class ThreadComponent {
         .subscribe((v) => this.threadContext = v);    
   }
 
+  async deleteThread(){
+    if(!confirm("Vill du verkligen ta bort tråden? Alla inlägg kommer att försvinna."))
+      return;
+
+    if(this.threadContext == null)
+      return;
+
+    if(this.threadService.deleteThread(this.threadContext.thread.id)){
+      this.router.navigateByUrl("/boards");
+    } else {
+      alert("Kunde inte ta bort tråden, är du inloggad?");
+    }
+  }
+
   async createPost(){
     if(this.threadContext == null)
       return;
 
     if(!this.creatingPost){
+      this.createPostContent = "";
       this.creatingPost = true;
       return;
     }

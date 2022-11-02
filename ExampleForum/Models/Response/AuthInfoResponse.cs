@@ -1,9 +1,9 @@
 ﻿namespace ExampleForum.Models.Response
 {
     /// <summary>
-    /// Utvald data som ska returneras till API:er för användare
+    /// Respons till förfrågan om autentiseringsuppgifter.
     /// </summary>
-    public class UserResponse
+    public class AuthInfoResponse
     {
 
         /// <summary>
@@ -11,9 +11,9 @@
         /// </summary>
         public string Id { get; set; }
         /// <summary>
-        /// Användarens namn för display på sidan
+        /// Användarens användarnamn
         /// </summary>
-        public string DisplayName { get; set; }
+        public string UserName { get; set; }
 
     }
 }
